@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Simple Drawing App</title>
+    <title>Random Drawing Generator</title>
     <style>
         #drawing-canvas {
             border: 1px solid black;
@@ -9,44 +9,48 @@
     </style>
 </head>
 <body>
-    <h1>Simple Drawing App</h1>
+    <h1>Random Drawing Generator</h1>
     <canvas id="drawing-canvas" width="500" height="300"></canvas>
-    <button id="clear-button">Clear Canvas</button>
+    <button id="generate-button">Generate Random Drawing</button>
 
     <script>
         const canvas = document.getElementById('drawing-canvas');
         const context = canvas.getContext('2d');
-        const clearButton = document.getElementById('clear-button');
-        let isDrawing = false;
+        const generateButton = document.getElementById('generate-button');
 
-        canvas.addEventListener('mousedown', startDrawing);
-        canvas.addEventListener('mousemove', draw);
-        canvas.addEventListener('mouseup', stopDrawing);
-        canvas.addEventListener('mouseout', stopDrawing);
+        generateButton.addEventListener('click', generateRandomDrawing);
 
-        clearButton.addEventListener('click', clearCanvas);
-
-        function startDrawing(event) {
-            isDrawing = true;
-            context.beginPath();
-            context.moveTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
-        }
-
-        function draw(event) {
-            if (!isDrawing) return;
-            context.lineWidth = 3;
-            context.lineCap = 'round';
-            context.strokeStyle = 'black';
-            context.lineTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
-            context.stroke();
-        }
-
-        function stopDrawing() {
-            isDrawing = false;
-        }
-
-        function clearCanvas() {
+        function generateRandomDrawing() {
             context.clearRect(0, 0, canvas.width, canvas.height);
+
+            const numShapes = Math.floor(Math.random() * 10) + 5; // Generate 5 to 15 shapes
+            for (let i = 0; i < numShapes; i++) {
+                const shapeType = Math.random() < 0.5 ? 'circle' : 'rectangle';
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height;
+                const size = Math.random() * 50 + 20; // Size between 20 and 70
+                const color = getRandomColor();
+
+                if (shapeType === 'circle') {
+                    context.beginPath();
+                    context.arc(x, y, size, 0, 2 * Math.PI);
+                    context.fillStyle = color;
+                    context.fill();
+                    context.closePath();
+                } else {
+                    context.fillStyle = color;
+                    context.fillRect(x - size / 2, y - size / 2, size, size);
+                }
+            }
+        }
+
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
         }
     </script>
 </body>
