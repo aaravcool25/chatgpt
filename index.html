@@ -1,50 +1,39 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>ChatGPT API Example</title>
+    <title>Random Picture Generator</title>
 </head>
 <body>
-    <div id="chat-container">
-        <!-- Chat messages will be displayed here -->
+    <h1>Random Picture Generator</h1>
+    <button id="generate-button">Generate Random Picture</button>
+    <div id="picture-container">
+        <!-- Random pictures will be displayed here -->
     </div>
-    <input type="text" id="user-input" placeholder="Type a message...">
-    <button id="send-button">Send</button>
 
     <script>
-        const apiKey = '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'; // Replace with your actual API key
-        const apiUrl = 'https://cors-anywhere.herokuapp.com/https://api.openai.com/v1/chat/completions';
+        const pictureContainer = document.getElementById('picture-container');
+        const generateButton = document.getElementById('generate-button');
 
+        const images = [
+            'https://via.placeholder.com/150',
+            'https://via.placeholder.com/200',
+            'https://via.placeholder.com/250',
+            'https://via.placeholder.com/300',
+            'https://via.placeholder.com/350'
+        ];
 
-        const chatContainer = document.getElementById('chat-container');
-        const userInput = document.getElementById('user-input');
-        const sendButton = document.getElementById('send-button');
+        generateButton.addEventListener('click', () => {
+            // Get a random index to select a random image from the array
+            const randomIndex = Math.floor(Math.random() * images.length);
+            const randomImageSrc = images[randomIndex];
 
-        sendButton.addEventListener('click', async () => {
-            const message = userInput.value;
-            if (message.trim() === '') {
-                return;
-            }
+            // Create an <img> element and set its source to the random image
+            const imgElement = document.createElement('img');
+            imgElement.src = randomImageSrc;
 
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${apiKey}`
-                },
-                body: JSON.stringify({
-                    model: 'gpt-3.5-turbo',
-                    messages: [{ role: 'user', content: message }]
-                })
-            });
-
-            const data = await response.json();
-            const reply = data.choices[0].message.content;
-
-            // Display the user message and the AI reply in the chat container
-            chatContainer.innerHTML += `<p>User: ${message}</p><p>AI: ${reply}</p>`;
-
-            // Clear the user input field
-            userInput.value = '';
+            // Append the image element to the picture container
+            pictureContainer.innerHTML = '';
+            pictureContainer.appendChild(imgElement);
         });
     </script>
 </body>
