@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ChatGPT API Example</title>
+</head>
+<body>
+    <div id="chat-container">
+        <!-- Chat messages will be displayed here -->
+    </div>
+    <input type="text" id="user-input" placeholder="Type a message...">
+    <button id="send-button">Send</button>
+
+    <script>
+        const apiKey = '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'; // Replace with your actual API key
+        const apiUrl = 'https://api.openai.com/v1/chat/completions';
+
+        const chatContainer = document.getElementById('chat-container');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+
+        sendButton.addEventListener('click', async () => {
+            const message = userInput.value;
+            if (message.trim() === '') {
+                return;
+            }
+
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    model: 'gpt-3.5-turbo',
+                    messages: [{ role: 'user', content: message }]
+                })
+            });
+
+            const data = await response.json();
+            const reply = data.choices[0].message.content;
+
+            // Display the user message and the AI reply in the chat container
+            chatContainer.innerHTML += `<p>User: ${message}</p><p>AI: ${reply}</p>`;
+
+            // Clear the user input field
+            userInput.value = '';
+        });
+    </script>
+</body>
+</html>
