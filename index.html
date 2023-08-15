@@ -1,40 +1,53 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Random Picture Generator</title>
+    <title>Simple Drawing App</title>
+    <style>
+        #drawing-canvas {
+            border: 1px solid black;
+        }
+    </style>
 </head>
 <body>
-    <h1>Random Picture Generator</h1>
-    <button id="generate-button">Generate Random Picture</button>
-    <div id="picture-container">
-        <!-- Random pictures will be displayed here -->
-    </div>
+    <h1>Simple Drawing App</h1>
+    <canvas id="drawing-canvas" width="500" height="300"></canvas>
+    <button id="clear-button">Clear Canvas</button>
 
     <script>
-        const pictureContainer = document.getElementById('picture-container');
-        const generateButton = document.getElementById('generate-button');
+        const canvas = document.getElementById('drawing-canvas');
+        const context = canvas.getContext('2d');
+        const clearButton = document.getElementById('clear-button');
+        let isDrawing = false;
 
-        const images = [
-            'https://via.placeholder.com/150',
-            'https://via.placeholder.com/200',
-            'https://via.placeholder.com/250',
-            'https://via.placeholder.com/300',
-            'https://via.placeholder.com/350'
-        ];
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
 
-        generateButton.addEventListener('click', () => {
-            // Get a random index to select a random image from the array
-            const randomIndex = Math.floor(Math.random() * images.length);
-            const randomImageSrc = images[randomIndex];
+        clearButton.addEventListener('click', clearCanvas);
 
-            // Create an <img> element and set its source to the random image
-            const imgElement = document.createElement('img');
-            imgElement.src = randomImageSrc;
+        function startDrawing(event) {
+            isDrawing = true;
+            context.beginPath();
+            context.moveTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+        }
 
-            // Append the image element to the picture container
-            pictureContainer.innerHTML = '';
-            pictureContainer.appendChild(imgElement);
-        });
+        function draw(event) {
+            if (!isDrawing) return;
+            context.lineWidth = 3;
+            context.lineCap = 'round';
+            context.strokeStyle = 'black';
+            context.lineTo(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop);
+            context.stroke();
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        function clearCanvas() {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+        }
     </script>
 </body>
 </html>
