@@ -1,57 +1,69 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Random Drawing Generator</title>
+    <title>Simple Web Browser</title>
     <style>
-        #drawing-canvas {
-            border: 1px solid black;
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #tab-container {
+            display: flex;
+        }
+        .tab {
+            padding: 10px;
+            cursor: pointer;
+        }
+        .tab-content {
+            display: none;
+            border: 1px solid #ccc;
+            width: 100%;
+            height: 500px;
+        }
+        #new-tab-button {
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <h1>Random Drawing Generator</h1>
-    <canvas id="drawing-canvas" width="500" height="300"></canvas>
-    <button id="generate-button">Generate Random Drawing</button>
-
+    <div>
+        <div id="tab-container">
+        </div>
+        <button id="new-tab-button" onclick="addNewTab()">+ New Tab</button>
+    </div>
     <script>
-        const canvas = document.getElementById('drawing-canvas');
-        const context = canvas.getContext('2d');
-        const generateButton = document.getElementById('generate-button');
+        let currentTab = 0;
 
-        generateButton.addEventListener('click', generateRandomDrawing);
-
-        function generateRandomDrawing() {
-            context.clearRect(0, 0, canvas.width, canvas.height);
-
-            const numShapes = Math.floor(Math.random() * 10) + 5; // Generate 5 to 15 shapes
-            for (let i = 0; i < numShapes; i++) {
-                const shapeType = Math.random() < 0.5 ? 'circle' : 'rectangle';
-                const x = Math.random() * canvas.width;
-                const y = Math.random() * canvas.height;
-                const size = Math.random() * 50 + 20; // Size between 20 and 70
-                const color = getRandomColor();
-
-                if (shapeType === 'circle') {
-                    context.beginPath();
-                    context.arc(x, y, size, 0, 2 * Math.PI);
-                    context.fillStyle = color;
-                    context.fill();
-                    context.closePath();
-                } else {
-                    context.fillStyle = color;
-                    context.fillRect(x - size / 2, y - size / 2, size, size);
-                }
-            }
+        function switchTab(tabIndex) {
+            document.getElementById(`tab${currentTab + 1}`).style.display = "none";
+            currentTab = tabIndex;
+            document.getElementById(`tab${currentTab + 1}`).style.display = "block";
         }
 
-        function getRandomColor() {
-            const letters = '0123456789ABCDEF';
-            let color = '#';
-            for (let i = 0; i < 6; i++) {
-                color += letters[Math.floor(Math.random() * 16)];
-            }
-            return color;
+        function addNewTab() {
+            const tabContainer = document.getElementById("tab-container");
+            const newTabIndex = tabContainer.children.length - 1;
+            const newTab = document.createElement("div");
+            newTab.className = "tab";
+            newTab.textContent = `Tab ${newTabIndex + 1}`;
+            newTab.onclick = () => switchTab(newTabIndex);
+            tabContainer.insertBefore(newTab, document.getElementById("new-tab-button"));
+
+            const newTabContent = document.createElement("div");
+            newTabContent.className = "tab-content";
+            newTabContent.id = `tab${newTabIndex + 1}`;
+            tabContainer.parentNode.appendChild(newTabContent);
+
+            const iframe = document.createElement("iframe");
+            iframe.src = "about:blank";
+            iframe.width = "100%";
+            iframe.height = "100%";
+            iframe.frameBorder = "0";
+            newTabContent.appendChild(iframe);
+
+            switchTab(newTabIndex);
         }
+
+        switchTab(currentTab); // Initialize with the first tab
     </script>
 </body>
 </html>
