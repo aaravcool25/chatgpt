@@ -32,6 +32,7 @@
     </div>
     <script>
         let currentTab = 0;
+        let tabCount = 0;
 
         function switchTab(tabIndex) {
             document.getElementById(`tab${currentTab + 1}`).style.display = "none";
@@ -41,7 +42,7 @@
 
         function addNewTab() {
             const tabContainer = document.getElementById("tab-container");
-            const newTabIndex = tabContainer.children.length - 1;
+            const newTabIndex = tabCount++;
             const newTab = document.createElement("div");
             newTab.className = "tab";
             newTab.textContent = `Tab ${newTabIndex + 1}`;
@@ -54,7 +55,7 @@
             tabContainer.parentNode.appendChild(newTabContent);
 
             const iframe = document.createElement("iframe");
-            iframe.src = "about:blank";
+            iframe.src = "https://www.google.com";
             iframe.width = "100%";
             iframe.height = "100%";
             iframe.frameBorder = "0";
@@ -63,7 +64,7 @@
             switchTab(newTabIndex);
         }
 
-        switchTab(currentTab); // Initialize with the first tab
+        addNewTab(); // Initially, open one tab
     </script>
 </body>
 </html>
